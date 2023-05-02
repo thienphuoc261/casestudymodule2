@@ -1,6 +1,8 @@
 package service;
 
 import entity.User;
+import service.impl.Employee;
+import service.impl.Manager;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,16 +12,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserService extends User implements Serializable {
-    private static final String FILE_PATH = "src\\data\\data.txt";
+    private static final String FILE_PATH = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\data.txt";
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
     private static final String USERNAME_REGEX = "^[a-zA-Z0-9]{8,}$";
     private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
-    private static List<User> userList = new ArrayList<>();
+    public static List<User> userList = new ArrayList<>();
 
     public UserService() {
     }
 
-    public static boolean register(String email, String userName, String password) {
+    public static boolean register(String email, String userName, String password,String role) {
         for (User user : userList) {
             if (user.getEmail().equals(email)) {
                 System.err.println("Email is already exist!!!");
@@ -63,8 +65,8 @@ public class UserService extends User implements Serializable {
         return matcher.matches();
     }
 
-    public static boolean logIn(String userName, String password) {
-        for (User user : userList) {
+    public static boolean logIn(String userName, String password, List<User> userList1) {
+        for (User user : userList1) {
             if (user.getUserName().equals(userName) && user.getPassword().equals(password)) {
                 return true;
             }
@@ -72,22 +74,12 @@ public class UserService extends User implements Serializable {
         return false;
     }
 
-    public static User findUserByUserName(String userName) {
-        for (User user : userList) {
-            if (user.getUserName().equals(userName)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
     public static void saveUser() {
         try {
             FileWriter fileWriter = new FileWriter(FILE_PATH, true);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            for (User user : userList) {
-                bufferedWriter.write(user.toFile() + "\n");
-            }
+            User user = userList.get(userList.size() - 1);
+            bufferedWriter.write(user.toFile() + "\n");
             bufferedWriter.close();
             fileWriter.close();
         } catch (Exception e) {
@@ -100,10 +92,12 @@ public class UserService extends User implements Serializable {
             FileReader fileReader = new FileReader(FILE_PATH);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line = null;
-            String[] arr = new String[3];
+
             while ((line = bufferedReader.readLine()) != null) {
+                String[] arr = new String[4];
                 arr = line.split(",");
-                userList.add(new User(arr[0], arr[1], arr[2]));
+                User user = new User(arr[0],arr[1],arr[2],arr[3]);
+                userList.add(user);
             }
             fileReader.close();
             bufferedReader.close();
@@ -113,53 +107,52 @@ public class UserService extends User implements Serializable {
         return userList;
     }
 
-    public static void run() {
-        Scanner scanner = new Scanner(System.in);
-        int choice;
-        do {
-            System.out.println("Please select an option:");
-            System.out.println("1. Register");
-            System.out.println("2. Login");
-            System.out.println("3. Exit");
-            System.out.print("Your choice: ");
-            choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    System.out.println("Input User Name: ");
-                    String userName = scanner.next();
-                    System.out.println("Input password: ");
-                    String password = scanner.next();
-                    System.out.println("Input email: ");
-                    String email = scanner.next();
-                    if (register(email,userName,password)) {
-                        User user = new User(email, userName, password);
-                        userList.add(user);
-                        saveUser();
-                        break;
-                    }
-                    else{
-                        System.err.println("Enter again");
-                    }
-                    break;
-                case 2:
-                    loadUserFromFile();
-                    System.out.println("Input User Name: ");
-                    String userName1 = scanner.next();
-                    System.out.println("Input password: ");
-                    String password1 = scanner.next();
-                    if(logIn(userName1, password1)){
-                        System.out.println("Log in successfully !!!");
-                    } else {
-                        System.err.println("Fail to log in");
-                    }
-                    break;
-                case 3:
-                    System.out.println("Exiting program. Goodbye!");
-                    System.exit(0);
-                default:
-                    System.err.println("Invalid choice. Please select again.");
+    public static User getUserByUserName(String userName, List<User> userListForLogin){
+        for (User user: userListForLogin) {
+            if (user.getUserName().equals(userName)) {
+                return user;
             }
-        } while (true);
+        }
+        return null;
     }
+
+public static void run() {
+    Scanner scanner = new Scanner(System.in);
+    int choice;
+    do {
+        System.out.println("=====WELCOME TO MY STORAGE=====");
+        System.out.println("Please select an option:");
+        System.out.println("1. Login");
+        System.out.println("2. Exit");
+        System.out.print("Your choice: ");
+        choice = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (choice) {
+            case 1:
+                System.out.println("Input User Name: ");
+                String userName = scanner.nextLine();
+                System.out.println("Input password: ");
+                String password = scanner.nextLine();
+                List<User> userListForLogin = loadUserFromFile();
+                if (logIn(userName, password, userListForLogin)) {
+                    User user = getUserByUserName(userName, userListForLogin);
+                    if (user.getRole().equals("manager")) {
+                        Manager.run();
+                    } else if (user.getRole().equals("employee")) {
+                        Employee.run();
+                    }
+                } else {
+                    System.err.println("Fail to log in");
+                }
+                break;
+            case 2:
+                System.exit(0);
+                break;
+            default:
+                System.err.println("Invalid choice");
+        }
+    } while (true);
 }
+}
+

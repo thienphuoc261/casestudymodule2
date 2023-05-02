@@ -1,0 +1,2 @@
+3,LogitechG999,79,999000,2023,2028,unit,pc mouse
+2,Iphone 14 Promax,10,23000000,2023,2028,unit,phone
