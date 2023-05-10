@@ -1,13 +1,22 @@
 package service;
 
+import entity.Customer;
 import entity.Product;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ProductService extends Product implements Serializable {
-    private static final String FILE_PRODUCT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\dataProduct.txt";
+    public static final String FILE_PRODUCT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\dataProduct.txt";
+    private static final String FILE_IMPORT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\importHistory";
+    private static final String FILE_EXPORT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\exportHistory";
     public static List<Product> productList = new ArrayList<>();
 
     public static void saveProduct() {
@@ -32,7 +41,7 @@ public class ProductService extends Product implements Serializable {
 
             while ((line = bufferedReader.readLine()) != null) {
                 ArrayList<Object> arrList = new ArrayList<>(Arrays.asList(line.split(",")));
-                if (arrList.size() == 8) {
+                if (arrList.size() == 10) {
                     if (isInteger(arrList.get(0)) &&
                             arrList.get(1) instanceof String &&
                             isInteger(arrList.get(2)) &&
@@ -40,7 +49,9 @@ public class ProductService extends Product implements Serializable {
                             arrList.get(4) instanceof String &&
                             arrList.get(5) instanceof String &&
                             arrList.get(6) instanceof String &&
-                            arrList.get(7) instanceof String) {
+                            arrList.get(7) instanceof String &&
+                            arrList.get(8) instanceof String &&
+                            arrList.get(9) instanceof String) {
                         int id = Integer.parseInt((String) arrList.get(0));
                         String productName = (String) arrList.get(1);
                         int quantity = Integer.parseInt((String) arrList.get(2));
@@ -49,14 +60,16 @@ public class ProductService extends Product implements Serializable {
                         String expirationDate = (String) arrList.get(5);
                         String unit = (String) arrList.get(6);
                         String discription = (String) arrList.get(7);
+                        String importer = (String) arrList.get(8);
+                        String importDate = (String) arrList.get(9);
 
-                        Product product = new Product(id, productName, quantity, unitPriceOfProduct, manufactureDate, expirationDate, unit, discription);
+                        Product product = new Product(id, productName, quantity, unitPriceOfProduct, manufactureDate, expirationDate, unit, discription, importer, importDate);
                         productList.add(product);
                     } else {
-                        System.err.println("Lỗi: Kiểu dữ liệu không phù hợp.");
+                        System.err.println("Error: Data type does not match");
                     }
                 } else {
-                    System.err.println("Lỗi: Số lượng phần tử không đúng.");
+                    System.err.println("Error: Incorrect number of elements");
                 }
             }
             fileReader.close();
@@ -66,7 +79,7 @@ public class ProductService extends Product implements Serializable {
         }
         return productList;
     }
-    private static boolean isInteger(Object object) {
+    public static boolean isInteger(Object object) {
         if (object instanceof Integer) {
             return true;
         }
@@ -81,24 +94,24 @@ public class ProductService extends Product implements Serializable {
         return false;
     }
 
-    public static void addProduct(Product product) {
+    public static void importProduct(Product product) {
         productList.add(product);
         saveProduct();
     }
 
-    public static void updateProduct(String productName, Product updatedProduct, List<Product> productList1) {
+    public static void updateProduct(String productName, Product updatedProduct, List<Product> productListForUpdate) {
         boolean productFound = false;
-        for (int i = 0; i < productList1.size(); i++) {
-            Product product = productList1.get(i);
+        for (int i = 0; i < productListForUpdate.size(); i++) {
+            Product product = productListForUpdate.get(i);
             if (product.getProductName().equalsIgnoreCase(productName)) {
-                productList1.set(i, updatedProduct);
+                productListForUpdate.set(i, updatedProduct);
                 productFound = true;
                 break;
             }
         }
 
         if (!productFound) {
-            System.out.println("Không tìm thấy sản phẩm có tên: " + productName);
+            System.out.println("Provider not found: " + productName);
             return;
         }
 
@@ -106,7 +119,7 @@ public class ProductService extends Product implements Serializable {
             FileWriter fileWriter = new FileWriter(FILE_PRODUCT);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-            for (Product product : productList1) {
+            for (Product product : productListForUpdate) {
                 bufferedWriter.write(product.toFileProduct());
                 bufferedWriter.newLine();
             }
@@ -118,10 +131,10 @@ public class ProductService extends Product implements Serializable {
         }
     }
 
-    public static void deleteProductByName(String productName, List<Product> productList1) {
+    public static void deleteProductByName(String productName, List<Product> productListForDelete) {
         boolean productFound = false;
         Product productToRemove = null;
-        for (Product product : productList1) {
+        for (Product product : productListForDelete) {
             if (product.getProductName().equalsIgnoreCase(productName)) {
                 productToRemove = product;
                 productFound = true;
@@ -130,12 +143,12 @@ public class ProductService extends Product implements Serializable {
         }
 
         if (productFound) {
-            productList1.remove(productToRemove);
+            productListForDelete.remove(productToRemove);
             try {
                 FileWriter fileWriter = new FileWriter(FILE_PRODUCT);
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
-                for (Product product : productList1) {
+                for (Product product : productListForDelete) {
                     bufferedWriter.write(product.toFileProduct());
                     bufferedWriter.newLine();
                 }
@@ -145,18 +158,201 @@ public class ProductService extends Product implements Serializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("Product removed successfully.");
+            System.out.println("Provider removed successfully.");
         } else {
-            System.err.println("Product not found.");
+            System.err.println("Provider not found.");
         }
     }
 
-    public static boolean findProductByName(String productName, List<Product> productList1) {
-        for (Product product : productList1) {
+    public static void viewProducts(){
+        try {
+            FileReader fileReader = new FileReader(FILE_PRODUCT);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            bufferedReader.close();
+            fileReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean findProductByName(String productName, List<Product> productListForFind) {
+        for (Product product : productListForFind) {
             if (product.getProductName().equalsIgnoreCase(productName)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static Product findProductByID(int id, List<Product> productListForFind) {
+        for (Product product : productListForFind) {
+            if (product.getId() == id) {
+                System.out.println(product);
+                return product;
+            }
+        }
+        return null;
+    }
+
+    public static void noteHistoryImport(String productName, String discription, int quantity, int unitPriceOfProduct, String staff, String action) {
+        try {
+            FileWriter fw = new FileWriter(FILE_IMPORT, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+            bw.write(dtf.format(now) + " - " + action + ": " + productName + ", " + discription + ", " + quantity + ", " + unitPriceOfProduct + ", " + (quantity*unitPriceOfProduct) + "," + staff);
+            bw.newLine();
+
+            bw.close();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void noteHistoryExport(String productName, String discription, int quantity, int unitPriceOfProduct, String staff, String action) {
+        try {
+            FileWriter fw = new FileWriter(FILE_EXPORT, true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+            bw.write(dtf.format(now) + " - " + action + ": " + productName + ", " + discription + ", " + quantity + ", " + unitPriceOfProduct + ", " + (quantity*unitPriceOfProduct) + "," + staff);
+            bw.newLine();
+
+            bw.close();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void exportProduct(String productName, int quantity, int id) {
+        List<Product> productListForExport = loadProductFromFile();
+        boolean productFound = false;
+
+        for (Product product : productListForExport) {
+            if (product.getProductName().equalsIgnoreCase(productName) && product.getId() == id) {
+                if (product.getQuantity() >= quantity) {
+                    product.setQuantity(product.getQuantity() - quantity);
+                    productFound = true;
+                    break;
+                } else {
+                    System.err.println("Not enough quantity to export.");
+                    return;
+                }
+            }
+        }
+
+        if (productFound) {
+            try {
+                FileWriter fileWriter = new FileWriter(FILE_PRODUCT);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+                for (Product product : productListForExport) {
+                    bufferedWriter.write(product.toFileProduct());
+                    bufferedWriter.newLine();
+                }
+
+                bufferedWriter.close();
+                fileWriter.close();
+                System.out.println("Product exported successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.err.println("Product not found.");
+        }
+    }
+
+    public static void viewHistoryImport(){
+        try {
+            FileReader fileReader = new FileReader(FILE_IMPORT);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            bufferedReader.close();
+            fileReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Product findProductByName1(String productName, List<Product> productListForFind) {
+        for (Product product : productListForFind) {
+            if (product.getProductName().equalsIgnoreCase(productName)) {
+                return product;
+            }
+        }
+        return null;
+    }
+    public static void saveProductListToFile(List<Product> productList) {
+        Path filePath = Paths.get(FILE_PRODUCT);
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
+            for (Product product : productList) {
+                String line = String.format("%d,%s,%d,%d,%s,%s,%s,%s,%s,%s", product.getId(), product.getProductName(),product.getQuantity(),product.getUnitPriceOfProduct(), product.getManufactureDate(), product.getExpirationDate(), product.getUnit(), product.getDiscription(), product.getImporter(), product.getImportDate());
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveOrderHistoryToFile(List<Order> orderList) {
+        try (PrintWriter writer = new PrintWriter("C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\orderHistory.txt")) {
+            for (Order order : orderList) {
+                String line = String.format("%s,%s,%d,%s,%s,%s,%b", order.getOrderID(), order.getProductName(), order.getQuantity(), order.getOrderDate(), order.getDestination(), order.getMessage(), order.isDelivered());
+                writer.println(line);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void confirmOrderFromCustomer() {
+        List<Order> orderList = Customer.loadOrderHistoryFromFile();
+        List<Product> productListForConfirm = ProductService.loadProductFromFile();
+        boolean isConfirmed = false;
+
+        for (Order order : orderList) {
+            if (!order.isDelivered()) {
+                String productName = order.getProductName();
+                int quantity = order.getQuantity();
+                LocalDate orderDate = order.getOrderDate();
+                String destination = order.getDestination();
+                String message = order.getMessage();
+                String orderId = order.getOrderID();
+                for (Product product : productListForConfirm) {
+                    if (product.getProductName().equalsIgnoreCase(productName) && product.getQuantity() >= quantity) {
+                        product.setQuantity(product.getQuantity() - quantity);
+                        isConfirmed = true;
+                        order.setDelivered(true);
+                        exportProduct(product.getProductName(), product.getQuantity(), product.getId());
+                        break;
+                    }
+                }
+                if (isConfirmed) {
+                    System.out.printf("Order with ID %s confirmed and updated in order history.%n", orderId);
+                } else {
+                    System.out.printf("Order with ID %s cannot be confirmed due to insufficient stock.%n", orderId);
+                }
+            }
+        }
+        saveOrderHistoryToFile(orderList);
+        saveProductListToFile(productListForConfirm);
     }
 }

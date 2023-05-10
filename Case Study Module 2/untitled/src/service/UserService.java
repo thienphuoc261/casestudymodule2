@@ -1,13 +1,11 @@
 package service;
 
+import entity.Customer;
 import entity.User;
-import service.impl.Employee;
-import service.impl.Manager;
-
+import entity.Employee;
+import entity.Manager;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,20 +86,24 @@ public class UserService extends User implements Serializable {
     }
 
     public static List<User> loadUserFromFile() {
-        try {
-            FileReader fileReader = new FileReader(FILE_PATH);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            String line = null;
+        userList.clear();
+        try (FileReader fileReader = new FileReader(FILE_PATH);
+             BufferedReader bufferedReader = new BufferedReader(fileReader)) {
 
+            Set<String> userSet = new HashSet<>();
+
+            String line;
             while ((line = bufferedReader.readLine()) != null) {
-                String[] arr = new String[4];
-                arr = line.split(",");
-                User user = new User(arr[0],arr[1],arr[2],arr[3]);
+                userSet.add(line);
+            }
+
+            for (String userData : userSet) {
+                String[] arr = userData.split(",");
+                User user = new User(arr[0], arr[1], arr[2], arr[3]);
                 userList.add(user);
             }
-            fileReader.close();
-            bufferedReader.close();
-        } catch (Exception e) {
+            updateUserFile();
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return userList;
@@ -116,43 +118,81 @@ public class UserService extends User implements Serializable {
         return null;
     }
 
-public static void run() {
-    Scanner scanner = new Scanner(System.in);
-    int choice;
-    do {
-        System.out.println("=====WELCOME TO MY STORAGE=====");
-        System.out.println("Please select an option:");
-        System.out.println("1. Login");
-        System.out.println("2. Exit");
-        System.out.print("Your choice: ");
-        choice = scanner.nextInt();
-        scanner.nextLine();
-
-        switch (choice) {
-            case 1:
-                System.out.println("Input User Name: ");
-                String userName = scanner.nextLine();
-                System.out.println("Input password: ");
-                String password = scanner.nextLine();
-                List<User> userListForLogin = loadUserFromFile();
-                if (logIn(userName, password, userListForLogin)) {
-                    User user = getUserByUserName(userName, userListForLogin);
-                    if (user.getRole().equals("manager")) {
-                        Manager.run();
-                    } else if (user.getRole().equals("employee")) {
-                        Employee.run();
-                    }
-                } else {
-                    System.err.println("Fail to log in");
-                }
-                break;
-            case 2:
-                System.exit(0);
-                break;
-            default:
-                System.err.println("Invalid choice");
+    public static boolean findUserByUserName(String userName, List<User> userListForFinding){
+        for (User user : userListForFinding) {
+            if (user.getUserName().equalsIgnoreCase(userName)) {
+                return true;
+            }
         }
-    } while (true);
-}
+        return false;
+    }
+
+    public static void updateUserFile() {
+        try (FileWriter fileWriter = new FileWriter(FILE_PATH);
+             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+            for (User user : userList) {
+                bufferedWriter.write(user.toFile() + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+public static void setRole(String username, String newRole) {
+    User foundUser = null;
+    for (User user : userList) {
+        if (user.getUserName().equals(username)) {
+            user.setRole(newRole);
+            foundUser = user;
+            break;
+        }
+    }
+
+    if (foundUser != null) {
+        updateUserFile();
+        System.out.println("Has been updated " + username + " to " + newRole + ".");
+    } else {
+        System.err.println("Cannot find " + username + ".");
+    }
 }
 
+    public static void viewUsers(){
+        try {
+            FileReader fileReader = new FileReader(FILE_PATH);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            bufferedReader.close();
+            fileReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void run() {
+        Scanner scanner = new Scanner(System.in);
+        do {
+            System.out.println("Input User Name: ");
+            String userName = scanner.nextLine();
+            System.out.println("Input password: ");
+            String password = scanner.nextLine();
+            List<User> userListForLogin = loadUserFromFile();
+            if (logIn(userName, password, userListForLogin)) {
+                User user = getUserByUserName(userName, userListForLogin);
+                if (user.getRole().equals("manager")) {
+                    Manager.run();
+                } else if (user.getRole().equals("employee")) {
+                    Employee.run();
+                } else if (user.getRole().equals("customer")) {
+                    Customer.run();
+                }
+            } else {
+                System.err.println("Fail to log in");
+            }
+        } while (true);
+    }
+}

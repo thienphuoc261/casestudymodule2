@@ -1,5 +1,5 @@
+import entity.Customer;
 import service.UserService;
-
 import static service.UserService.loadUserFromFile;
 
 public class Main {
@@ -7,5 +7,7 @@ public class Main {
         loadUserFromFile();
         UserService userService = new UserService();
         userService.run();
+
+//        System.out.println(Customer.loadOrderHistoryFromFile());
     }
 }

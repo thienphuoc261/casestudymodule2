@@ -9,12 +9,13 @@ public class Product {
     private String expirationDate;
     private String unit;
     private String discription;
+    private String importer;
+    private String importDate;
 
-
-    public Product(){
+    public Product() {
     }
 
-    public Product(int id ,String productName, int quantity, int unitPriceOfProduct, String manufactureDate, String expirationDate, String unit, String discription) {
+    public Product(int id, String productName, int quantity, int unitPriceOfProduct, String manufactureDate, String expirationDate, String unit, String discription, String importer, String importDate) {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;
@@ -23,6 +24,8 @@ public class Product {
         this.expirationDate = expirationDate;
         this.unit = unit;
         this.discription = discription;
+        this.importer = importer;
+        this.importDate = importDate;
     }
 
     public int getId() {
@@ -89,20 +92,48 @@ public class Product {
         this.discription = discription;
     }
 
+    public String getImporter() {
+        return importer;
+    }
+
+    public void setImporter(String importer) {
+        this.importer = importer;
+    }
+
+    public String getImportDate() {
+        return importDate;
+    }
+
+    public void setImportDate(String importDate) {
+        this.importDate = importDate;
+    }
+
+    public String toFileProduct(){
+        return id + ","
+                + productName + ","
+                + quantity + ","
+                + unitPriceOfProduct + ","
+                + manufactureDate + ","
+                + expirationDate + ","
+                + unit + ","
+                + discription + ","
+                + importer + ","
+                + importDate;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
-                "productName='" + productName + '\'' +
+                "id=" + id +
+                ", productName='" + productName + '\'' +
                 ", quantity=" + quantity +
                 ", unitPriceOfProduct=" + unitPriceOfProduct +
                 ", manufactureDate='" + manufactureDate + '\'' +
                 ", expirationDate='" + expirationDate + '\'' +
                 ", unit='" + unit + '\'' +
                 ", discription='" + discription + '\'' +
+                ", importer='" + importer + '\'' +
+                ", importDate='" + importDate + '\'' +
                 '}';
-    }
-
-    public String toFileProduct(){
-        return id + "," + productName + "," + quantity + "," + unitPriceOfProduct + "," + manufactureDate + "," + expirationDate + "," + unit + "," + discription;
     }
 }
