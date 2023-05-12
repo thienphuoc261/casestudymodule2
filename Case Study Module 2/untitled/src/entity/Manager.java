@@ -1,15 +1,16 @@
 package entity;
-import service.ProductService;
-import service.ProviderService;
-import service.UserService;
+
+import service.*;
 import service.impl.BuiderProduct;
 import service.impl.BuilderProvider;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
 public class Manager {
 
-    public static void run(){
+    public static void run() {
         try {
             Scanner sc = new Scanner(System.in);
             int choice;
@@ -28,7 +29,35 @@ public class Manager {
                 choice = sc.nextInt();
                 switch (choice) {
                     case 1:
-                        ProductService.confirmOrderFromCustomer();
+                        System.out.println("=====ORDER HISTORY===== ");
+                        CustomerService.viewHistoryOrder();
+
+                        System.out.println("=====PRODUCT LIST=====");
+                        ProductService.viewProducts();
+
+                        System.out.println("Input product's ID: ");
+                        int productID = sc.nextInt();
+
+                        System.out.println("Input product's name: ");
+                        sc.nextLine();
+                        String productName = sc.nextLine();
+
+                        System.out.println("Input quantity: ");
+                        int quantity = sc.nextInt();
+
+                        System.out.println("Input unit price of product: ");
+                        int unitPriceOfProduct = sc.nextInt();
+
+                        System.out.println("Input staff: ");
+                        sc.nextLine();
+                        String staff = sc.nextLine();
+
+                        ProductService.exportProduct(productName, quantity, productID);
+                        ProductService.noteHistoryExport(productName, quantity, unitPriceOfProduct, staff, "EXPORT");
+
+                        System.out.println("Input order ID: ");
+                        String orderID = sc.nextLine();
+                        ProductService.updateOrderStatus(orderID);
                         break;
                     case 3:
                         System.out.println("=====REGISTER=====");
@@ -57,7 +86,9 @@ public class Manager {
                         System.out.println("4. Delete product");
                         System.out.println("5. View products");
                         System.out.println("6. Find product by ID");
-                        System.out.println("7. View history of im-export");
+                        System.out.println("7. View history of import");
+                        System.out.println("8. View history of export");
+                        System.out.println("0. Back");
                         System.out.println("Input your choice: ");
                         int choiceProduct = sc.nextInt();
                         switch (choiceProduct) {
@@ -68,14 +99,14 @@ public class Manager {
                                 sc.nextLine();
 
                                 System.out.println("Input product's name: ");
-                                String productName = sc.nextLine();
+                                String importProductName = sc.nextLine();
 
                                 System.out.println("Input quantity: ");
-                                int quantity = sc.nextInt();
+                                int importQuantity = sc.nextInt();
                                 sc.nextLine();
 
                                 System.out.println("Input unit price of product: ");
-                                int unitPriceOfProduct = sc.nextInt();
+                                int unitPriceOfProductImport = sc.nextInt();
                                 sc.nextLine();
 
                                 System.out.println("Input manufacture date of product: ");
@@ -95,21 +126,20 @@ public class Manager {
 
                                 System.out.println("Input import date: ");
                                 String importDate = sc.nextLine();
-//                                Product newProduct = new Product(id, productName, quantity, unitPriceOfProduct, manufactureDate, expirationDate, unit, description, importer, importDate);
                                 Product newProduct = new BuiderProduct()
                                         .buildID(id)
-                                                .buildProductName(productName)
-                                                        .buildQuantity(quantity)
-                                                                .buildUnitPriceOfProduct(unitPriceOfProduct)
-                                                                        .buildManufactureDate(manufactureDate)
-                                                                                .buildExpirationDate(expirationDate)
-                                                                                        .buildUnit(unit)
-                                                                                                .buildDiscription(discription)
-                                                                                                        .buildImporter(importer)
-                                                                                                                .buildImportDate(importDate)
-                                                                                                                        .build();
+                                        .buildProductName(importProductName)
+                                        .buildQuantity(importQuantity)
+                                        .buildUnitPriceOfProduct(unitPriceOfProductImport)
+                                        .buildManufactureDate(manufactureDate)
+                                        .buildExpirationDate(expirationDate)
+                                        .buildUnit(unit)
+                                        .buildDiscription(discription)
+                                        .buildImporter(importer)
+                                        .buildImportDate(importDate)
+                                        .build();
                                 ProductService.importProduct(newProduct);
-                                ProductService.noteHistoryImport(productName,discription,quantity,unitPriceOfProduct,importer,"IMPORT");
+                                ProductService.noteHistoryImport(importProductName, discription, importQuantity, unitPriceOfProductImport, importer, "IMPORT");
                                 break;
                             case 2:
                                 System.out.println("=====EXPORT PRODUCT=====");
@@ -133,8 +163,8 @@ public class Manager {
                                 System.out.println("Input exporter: ");
                                 String exporter = sc.nextLine();
 
-                                ProductService.exportProduct(productNameExport,quantityExport,idExport);
-                                ProductService.noteHistoryExport(productNameExport,descriptionExport,quantityExport,unitPriceOfProductExport,exporter,"EXPORT");
+                                ProductService.exportProduct(productNameExport, quantityExport, idExport);
+                                ProductService.noteHistoryExport(productNameExport, quantityExport, unitPriceOfProductExport, exporter, "EXPORT");
                                 break;
                             case 3:
                                 System.out.println("=====UPDATE PRODUCT=====");
@@ -179,16 +209,16 @@ public class Manager {
 //                                        Product updateProduct = new Product(idUpdate, productNameUpdate, quantityUpdate, unitOfProductUpdate, manufactureDateUpdate, expirationDateUpdate, unitUpdate, descriptionUpdate, importerUpdate, importDateUpdate);
                                         Product updateProduct = new BuiderProduct()
                                                 .buildID(idUpdate)
-                                                        .buildProductName(productNameUpdate)
-                                                                .buildQuantity(quantityUpdate)
-                                                                        .buildUnitPriceOfProduct(unitOfProductUpdate)
-                                                                                .buildManufactureDate(manufactureDateUpdate)
-                                                                                        .buildExpirationDate(expirationDateUpdate)
-                                                                                                .buildUnit(unitUpdate)
-                                                                                                        .buildDiscription(descriptionUpdate)
-                                                                                                                .buildImporter(importerUpdate)
-                                                                                                                        .buildImportDate(importDateUpdate)
-                                                                                                                                .build();
+                                                .buildProductName(productNameUpdate)
+                                                .buildQuantity(quantityUpdate)
+                                                .buildUnitPriceOfProduct(unitOfProductUpdate)
+                                                .buildManufactureDate(manufactureDateUpdate)
+                                                .buildExpirationDate(expirationDateUpdate)
+                                                .buildUnit(unitUpdate)
+                                                .buildDiscription(descriptionUpdate)
+                                                .buildImporter(importerUpdate)
+                                                .buildImportDate(importDateUpdate)
+                                                .build();
                                         ProductService.updateProduct(productName, updateProduct, productListForUpdate);
                                     } catch (Exception e) {
                                         System.err.println("Nhập lại cho đúng đi má !!!");
@@ -225,6 +255,12 @@ public class Manager {
                             case 7:
                                 ProductService.viewHistoryImport();
                                 break;
+                            case 8:
+                                ProductService.viewHistoryExport();
+                                break;
+                            case 0:
+                                run();
+                                break;
                             default:
                                 System.err.println("Invalid choice!!!");
                         }
@@ -236,6 +272,7 @@ public class Manager {
                         System.out.println("3. Delete provider");
                         System.out.println("4. View providers");
                         System.out.println("5. Find provider by name");
+                        System.out.println("0. Back");
                         System.out.println("Input your choice: ");
                         int choiceProvider = sc.nextInt();
                         switch (choiceProvider) {
@@ -254,13 +291,12 @@ public class Manager {
                                 System.out.println("Input provider's email: ");
                                 String emailProvider = sc.nextLine();
 
-//                                Provider provider = new Provider(providerName, address, phoneNumber, emailProvider);
                                 Provider provider = new BuilderProvider()
                                         .buildProviderName(providerName)
-                                                .buildAddress(address)
-                                                        .buildPhoneNumber(phoneNumber)
-                                                                .buildEmailOfProvider(emailProvider)
-                                                                        .build();
+                                        .buildAddress(address)
+                                        .buildPhoneNumber(phoneNumber)
+                                        .buildEmailOfProvider(emailProvider)
+                                        .build();
                                 ProviderService.addProvider(provider);
                                 break;
                             case 2:
@@ -291,7 +327,7 @@ public class Manager {
 //                                                                .buildPhoneNumber(updatePhoneNumber)
 //                                                                        .buildEmailOfProvider(updateEmailProvider)
 //                                                                                .build();
-                                        ProviderService.updateProvider(providerName, updateProvider,providerListForUpdate);
+                                        ProviderService.updateProvider(providerName, updateProvider, providerListForUpdate);
                                     } catch (Exception e) {
                                         System.err.println("Nhập lại cho đúng đi má !!!");
                                     }
@@ -322,6 +358,9 @@ public class Manager {
                                 String providerNameForSearching = sc.nextLine();
                                 ProviderService.findProvider(providerNameForSearching, providerListForSearching);
                                 break;
+                            case 0:
+                                run();
+                                break;
                             default:
                                 System.err.println("Invalid choice!!!");
                         }
@@ -335,7 +374,7 @@ public class Manager {
                         if (UserService.findUserByUserName(userNameForSetRole, userListForSetRole)) {
                             System.out.println("Input new role: ");
                             String newRole = sc.nextLine();
-                            switch (newRole){
+                            switch (newRole) {
                                 case "manager":
                                     UserService.setRole(userNameForSetRole, "manager");
                                     break;
@@ -356,23 +395,105 @@ public class Manager {
                         break;
                     case 7:
                         System.out.println("=====EXPORT REPORT=====");
-                        System.out.println("1. Export report in one day: ");
-                        System.out.println("2. Export report in one week: ");
-                        System.out.println("3. Export report in one month: ");
-                        System.out.println("4. Export report in one quarter: ");
-                        System.out.println("5. Export report in one year: ");
+                        System.out.println("1. Report import by date");
+                        System.out.println("2. Report export by date");
+                        System.out.println("3. Report import by week");
+                        System.out.println("4. Report export by week");
+                        System.out.println("5. Report import by month");
+                        System.out.println("6. Report export by month");
+                        System.out.println("7. Report import by year");
+                        System.out.println("8. Report export by year");
+                        System.out.println("0. Back");
                         System.out.println("Input your choice: ");
-                        int choiceReport = sc.nextInt();
-                        switch (choiceReport) {
+                        int choiceCase7 = sc.nextInt();
+                        switch (choiceCase7) {
                             case 1:
+                                System.out.println("=====REPORT IMPORT BY DATE=====");
+                                System.out.println("Input year: ");
+                                int yearImport1 = sc.nextInt();
+                                System.out.println("Input month: ");
+                                int monthImport1 = sc.nextInt();
+                                System.out.println("Input day: ");
+                                int dayImport1 = sc.nextInt();
+                                LocalDate importDate1 = LocalDate.of(yearImport1, monthImport1, dayImport1);
+                                ReportExport.importReportByDate(importDate1);
                                 break;
                             case 2:
+                                System.out.println("=====REPORT EXPORT BY DATE=====");
+                                System.out.println("Input year: ");
+                                int yearExport2 = sc.nextInt();
+                                System.out.println("Input month: ");
+                                int monthExport2 = sc.nextInt();
+                                System.out.println("Input day: ");
+                                int dayExport2 = sc.nextInt();
+                                LocalDate reportDate2 = LocalDate.of(yearExport2, monthExport2, dayExport2);
+                                ReportExport.exportReportByDate(reportDate2);
                                 break;
                             case 3:
+                                System.out.println("=====REPORT IMPORT BY WEEK=====");
+                                System.out.println("Input year: ");
+                                int yearExport3 = sc.nextInt();
+                                System.out.println("Input month: ");
+                                int monthExport3 = sc.nextInt();
+                                System.out.println("Input day: ");
+                                int dayExport3 = sc.nextInt();
+                                LocalDate reportDate3 = LocalDate.of(yearExport3, monthExport3, dayExport3);
+                                ReportExport.importReportByWeek(reportDate3);
                                 break;
                             case 4:
+                                System.out.println("=====REPORT EXPORT BY WEEK=====");
+                                System.out.println("Input year: ");
+                                int yearExport4 = sc.nextInt();
+                                System.out.println("Input month: ");
+                                int monthExport4 = sc.nextInt();
+                                System.out.println("Input day: ");
+                                int dayExport4 = sc.nextInt();
+                                LocalDate reportDate4 = LocalDate.of(yearExport4, monthExport4, dayExport4);
+                                ReportExport.exportReportByWeek(reportDate4);
                                 break;
                             case 5:
+                                System.out.println("=====REPORT IMPORT BY MONTH=====");
+                                System.out.println("Input year: ");
+                                int yearImport5 = sc.nextInt();
+                                System.out.println("Input month: ");
+                                int monthImport5 = sc.nextInt();
+                                System.out.println("Input day: ");
+                                int dayImport5 = sc.nextInt();
+                                LocalDate importDate5 = LocalDate.of(yearImport5,monthImport5,dayImport5);
+                                ReportExport.importReportByMonth(importDate5);
+                                break;
+                            case 6:
+                                System.out.println("=====REPORT EXPORT BY MONTH=====");
+                                System.out.println("Input year: ");
+                                int yearExport6 = sc.nextInt();
+                                System.out.println("Input month: ");
+                                int monthExport6 = sc.nextInt();
+                                System.out.println("Input day: ");
+                                int dayExport6 = sc.nextInt();
+                                LocalDate exportDate6 = LocalDate.of(yearExport6,monthExport6,dayExport6);
+                                ReportExport.exportReportByMonth(exportDate6);
+                                break;
+                            case 7:
+                                System.out.println("=====REPORT IMPORT BY YEAR=====");
+                                System.out.println("Input year: ");
+                                int yearImport7 = sc.nextInt();
+                                System.out.println("Input month: ");
+                                int monthImport7 = sc.nextInt();
+                                System.out.println("Input day: ");
+                                int dayImport7 = sc.nextInt();
+                                LocalDate importDate7 = LocalDate.of(yearImport7,monthImport7,dayImport7);
+                                ReportExport.importReportByYear(importDate7);
+                                break;
+                            case 8:
+                                System.out.println("=====REPORT EXPORT BY YEAR=====");
+                                System.out.println("Input year: ");
+                                int yearExport8 = sc.nextInt();
+                                System.out.println("Input month: ");
+                                int monthExport8 = sc.nextInt();
+                                System.out.println("Input day: ");
+                                int dayExport8 = sc.nextInt();
+                                LocalDate exportDate8 = LocalDate.of(yearExport8,monthExport8,dayExport8);
+                                ReportExport.exportReportByYear(exportDate8);
                                 break;
                             default:
                                 System.err.println("Invalid choice!!!");
@@ -385,7 +506,7 @@ public class Manager {
                         System.err.println("Invalid choice!!!");
                 }
             } while (true);
-        } catch (Exception e){
+        } catch (Exception e) {
             System.err.println("Invalid choice!!!");
         } finally {
             run();

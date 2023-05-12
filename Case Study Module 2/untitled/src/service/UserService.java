@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserService extends User implements Serializable {
-    private static final String FILE_PATH = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\data.txt";
+    private static final String FILE_PATH = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\data.csv";
     private static final String EMAIL_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
     private static final String USERNAME_REGEX = "^[a-zA-Z0-9]{8,}$";
     private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$";
@@ -150,9 +150,9 @@ public static void setRole(String username, String newRole) {
 
     if (foundUser != null) {
         updateUserFile();
-        System.out.println("Has been updated " + username + " to " + newRole + ".");
+        System.out.println("Has been updated " + username + " to " + newRole);
     } else {
-        System.err.println("Cannot find " + username + ".");
+        System.err.println("Cannot find " + username);
     }
 }
 
@@ -176,6 +176,7 @@ public static void setRole(String username, String newRole) {
     public static void run() {
         Scanner scanner = new Scanner(System.in);
         do {
+            System.out.println("=====LOGIN=====");
             System.out.println("Input User Name: ");
             String userName = scanner.nextLine();
             System.out.println("Input password: ");
@@ -188,7 +189,7 @@ public static void setRole(String username, String newRole) {
                 } else if (user.getRole().equals("employee")) {
                     Employee.run();
                 } else if (user.getRole().equals("customer")) {
-                    Customer.run();
+                    CustomerService.run();
                 }
             } else {
                 System.err.println("Fail to log in");

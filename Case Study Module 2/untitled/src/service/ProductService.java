@@ -1,11 +1,12 @@
 package service;
 
-import entity.Customer;
 import entity.Product;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,10 +15,14 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ProductService extends Product implements Serializable {
-    public static final String FILE_PRODUCT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\dataProduct.txt";
-    private static final String FILE_IMPORT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\importHistory";
-    private static final String FILE_EXPORT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\exportHistory";
+    public static final String FILE_PRODUCT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\dataProduct.csv";
+    private static final String FILE_IMPORT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\importHistory.csv";
+    private static final String FILE_EXPORT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\exportHistory.csv";
     public static List<Product> productList = new ArrayList<>();
+
+    public ProductService() {
+        super("Product 1", 10, LocalDate.parse("2023-05-10"));
+    }
 
     public static void saveProduct() {
         try {
@@ -79,6 +84,7 @@ public class ProductService extends Product implements Serializable {
         }
         return productList;
     }
+
     public static boolean isInteger(Object object) {
         if (object instanceof Integer) {
             return true;
@@ -164,7 +170,7 @@ public class ProductService extends Product implements Serializable {
         }
     }
 
-    public static void viewProducts(){
+    public static void viewProducts() {
         try {
             FileReader fileReader = new FileReader(FILE_PRODUCT);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -208,7 +214,7 @@ public class ProductService extends Product implements Serializable {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-            bw.write(dtf.format(now) + " - " + action + ": " + productName + ", " + discription + ", " + quantity + ", " + unitPriceOfProduct + ", " + (quantity*unitPriceOfProduct) + "," + staff);
+            bw.write(dtf.format(now) + " - " + action + ": " + productName + ", " + discription + ", " + quantity + ", " + unitPriceOfProduct + ", " + (quantity * unitPriceOfProduct) + "," + staff);
             bw.newLine();
 
             bw.close();
@@ -218,7 +224,7 @@ public class ProductService extends Product implements Serializable {
         }
     }
 
-    public static void noteHistoryExport(String productName, String discription, int quantity, int unitPriceOfProduct, String staff, String action) {
+    public static void noteHistoryExport(String productName, int quantity, int unitPriceOfProduct, String staff, String action) {
         try {
             FileWriter fw = new FileWriter(FILE_EXPORT, true);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -226,7 +232,7 @@ public class ProductService extends Product implements Serializable {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-            bw.write(dtf.format(now) + " - " + action + ": " + productName + ", " + discription + ", " + quantity + ", " + unitPriceOfProduct + ", " + (quantity*unitPriceOfProduct) + "," + staff);
+            bw.write(dtf.format(now) + " - " + action + ": " + productName + ", " + quantity + ", " + unitPriceOfProduct + "," + staff);
             bw.newLine();
 
             bw.close();
@@ -274,7 +280,7 @@ public class ProductService extends Product implements Serializable {
         }
     }
 
-    public static void viewHistoryImport(){
+    public static void viewHistoryImport() {
         try {
             FileReader fileReader = new FileReader(FILE_IMPORT);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -299,60 +305,59 @@ public class ProductService extends Product implements Serializable {
         }
         return null;
     }
-    public static void saveProductListToFile(List<Product> productList) {
-        Path filePath = Paths.get(FILE_PRODUCT);
-        try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
-            for (Product product : productList) {
-                String line = String.format("%d,%s,%d,%d,%s,%s,%s,%s,%s,%s", product.getId(), product.getProductName(),product.getQuantity(),product.getUnitPriceOfProduct(), product.getManufactureDate(), product.getExpirationDate(), product.getUnit(), product.getDiscription(), product.getImporter(), product.getImportDate());
-                writer.write(line);
-                writer.newLine();
+
+    public static boolean findProductByID1(int productID, List<Product> productListForFind) {
+        for (Product product : productListForFind) {
+            if (product.getId() == productID) {
+                return true;
             }
+        }
+        return false;
+    }
+
+    public static void saveOrderHistoryToFile(List<Order> orderList) {
+        Path filePath = Paths.get("C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\orderHistory.txt");
+        List<String> lines = new ArrayList<>();
+
+        for (Order order : orderList) {
+            String line = String.format("%s,%s,%d,%s,%s,%s,%b", order.getOrderID(), order.getProductName(), order.getQuantity(), order.getOrderDate(), order.getDestination(), order.getMessage(), order.isDelivered());
+            lines.add(line);
+        }
+
+        try {
+            Files.write(filePath, lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static void saveOrderHistoryToFile(List<Order> orderList) {
-        try (PrintWriter writer = new PrintWriter("C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\orderHistory.txt")) {
-            for (Order order : orderList) {
-                String line = String.format("%s,%s,%d,%s,%s,%s,%b", order.getOrderID(), order.getProductName(), order.getQuantity(), order.getOrderDate(), order.getDestination(), order.getMessage(), order.isDelivered());
-                writer.println(line);
+
+    public static void updateOrderStatus(String orderID) {
+        List<Order> orderList = CustomerService.loadOrderListFromFile();
+        for (Order order : orderList) {
+            if (order.getOrderID().equals(orderID)) {
+                order.setDelivered(true);
+                break;
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
+
+        saveOrderHistoryToFile(orderList);
     }
 
-    public static void confirmOrderFromCustomer() {
-        List<Order> orderList = Customer.loadOrderHistoryFromFile();
-        List<Product> productListForConfirm = ProductService.loadProductFromFile();
-        boolean isConfirmed = false;
+    public static void viewHistoryExport() {
+        try {
+            FileReader fileReader = new FileReader(FILE_EXPORT);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String line;
 
-        for (Order order : orderList) {
-            if (!order.isDelivered()) {
-                String productName = order.getProductName();
-                int quantity = order.getQuantity();
-                LocalDate orderDate = order.getOrderDate();
-                String destination = order.getDestination();
-                String message = order.getMessage();
-                String orderId = order.getOrderID();
-                for (Product product : productListForConfirm) {
-                    if (product.getProductName().equalsIgnoreCase(productName) && product.getQuantity() >= quantity) {
-                        product.setQuantity(product.getQuantity() - quantity);
-                        isConfirmed = true;
-                        order.setDelivered(true);
-                        exportProduct(product.getProductName(), product.getQuantity(), product.getId());
-                        break;
-                    }
-                }
-                if (isConfirmed) {
-                    System.out.printf("Order with ID %s confirmed and updated in order history.%n", orderId);
-                } else {
-                    System.out.printf("Order with ID %s cannot be confirmed due to insufficient stock.%n", orderId);
-                }
+            while ((line = bufferedReader.readLine()) != null) {
+                System.out.println(line);
             }
+
+            bufferedReader.close();
+            fileReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        saveOrderHistoryToFile(orderList);
-        saveProductListToFile(productListForConfirm);
     }
 }

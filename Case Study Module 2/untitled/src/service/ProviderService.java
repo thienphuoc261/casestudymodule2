@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProviderService extends Provider {
-    private static final String FILE_PROVIDER = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\dataProvider.txt";
+    private static final String FILE_PROVIDER = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\dataProvider.csv";
     public static List<Provider> providerList = new ArrayList<>();
 
     public static void saveProvider() {

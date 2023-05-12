@@ -12,6 +12,7 @@ public class Order {
     private String message;
     private boolean isDelivered;
 
+
     public Order(String productName, int quantity, LocalDate orderDate, String destination, String message, boolean isDelivered) {
         this.orderID = UUID.randomUUID().toString();
         this.productName = productName;

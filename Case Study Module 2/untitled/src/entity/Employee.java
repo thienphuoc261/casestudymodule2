@@ -1,4 +1,5 @@
 package entity;
+import service.CustomerService;
 import service.ProductService;
 import service.UserService;
 
@@ -81,9 +82,38 @@ public class Employee {
                     String exporter = sc.nextLine();
 
                     ProductService.exportProduct(productNameExport,quantityExport,idExport);
-                    ProductService.noteHistoryExport(productNameExport,descriptionExport,quantityExport,unitPriceOfProductExport,exporter,"EXPORT");
+                    ProductService.noteHistoryExport(productNameExport,quantityExport,unitPriceOfProductExport,exporter,"EXPORT");
                     break;
                 case 3:
+                    System.out.println("=====ORDER HISTORY===== ");
+                    CustomerService.viewHistoryOrder();
+
+                    System.out.println("=====PRODUCT LIST=====");
+                    ProductService.viewProducts();
+
+                    System.out.println("Input product's ID: ");
+                    int productID = sc.nextInt();
+
+                    System.out.println("Input product's name: ");
+                    sc.nextLine();
+                    String productName1 = sc.nextLine();
+
+                    System.out.println("Input quantity: ");
+                    int quantity1 = sc.nextInt();
+
+                    System.out.println("Input unit price of product: ");
+                    int unitPriceOfProduct1 = sc.nextInt();
+
+                    System.out.println("Input staff: ");
+                    sc.nextLine();
+                    String staff = sc.nextLine();
+
+                    ProductService.exportProduct(productName1, quantity1, productID);
+                    ProductService.noteHistoryExport(productName1, quantity1, unitPriceOfProduct1, staff, "EXPORT");
+
+                    System.out.println("Input order ID: ");
+                    String orderID = sc.nextLine();
+                    ProductService.updateOrderStatus(orderID);
                     break;
                 case 4:
                     break;

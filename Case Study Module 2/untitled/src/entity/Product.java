@@ -1,5 +1,7 @@
 package entity;
 
+import java.time.LocalDate;
+
 public class Product {
     private int id;
     private String productName;
@@ -12,7 +14,7 @@ public class Product {
     private String importer;
     private String importDate;
 
-    public Product() {
+    public Product(String s, int i, LocalDate parse) {
     }
 
     public Product(int id, String productName, int quantity, int unitPriceOfProduct, String manufactureDate, String expirationDate, String unit, String discription, String importer, String importDate) {
@@ -27,6 +29,7 @@ public class Product {
         this.importer = importer;
         this.importDate = importDate;
     }
+
 
     public int getId() {
         return id;
@@ -108,7 +111,7 @@ public class Product {
         this.importDate = importDate;
     }
 
-    public String toFileProduct(){
+    public String toFileProduct() {
         return id + ","
                 + productName + ","
                 + quantity + ","
