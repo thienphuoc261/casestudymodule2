@@ -20,8 +20,12 @@ public class ProductService extends Product implements Serializable {
     private static final String FILE_EXPORT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\exportHistory.csv";
     public static List<Product> productList = new ArrayList<>();
 
-    public ProductService() {
-        super("Product 1", 10, LocalDate.parse("2023-05-10"));
+    public ProductService(String s, int i, LocalDate parse) {
+        super(s, i, parse);
+    }
+
+    public ProductService(int id, String productName, int quantity, int unitPriceOfProduct, String manufactureDate, String expirationDate, String unit, String discription, String importer, String importDate) {
+        super(id, productName, quantity, unitPriceOfProduct, manufactureDate, expirationDate, unit, discription, importer, importDate);
     }
 
     public static void saveProduct() {
@@ -93,7 +97,7 @@ public class ProductService extends Product implements Serializable {
             try {
                 Integer.parseInt((String) object);
                 return true;
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 return false;
             }
         }
@@ -316,7 +320,7 @@ public class ProductService extends Product implements Serializable {
     }
 
     public static void saveOrderHistoryToFile(List<Order> orderList) {
-        Path filePath = Paths.get("C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\orderHistory.txt");
+        Path filePath = Paths.get("C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\orderHistory.csv");
         List<String> lines = new ArrayList<>();
 
         for (Order order : orderList) {

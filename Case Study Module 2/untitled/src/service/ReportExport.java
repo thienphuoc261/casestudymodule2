@@ -2,11 +2,9 @@ package service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 public class ReportExport {
     private static final String EXPORT_HISTORY_FILE = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\exportHistory.csv";
@@ -118,19 +116,19 @@ public class ReportExport {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String line;
 
-            while((line = bufferedReader.readLine()) != null){
+            while ((line = bufferedReader.readLine()) != null) {
                 String[] data = line.split(" - ");
                 String dateString = data[0].trim();
                 LocalDateTime importDateTime = LocalDateTime.parse(dateString, formatter).toLocalDate().atStartOfDay();
 
-                if (importDateTime.toLocalDate().isAfter(startDate) && importDateTime.toLocalDate().isBefore(endDate.plusDays(1))){
+                if (importDateTime.toLocalDate().isAfter(startDate) && importDateTime.toLocalDate().isBefore(endDate.plusDays(1))) {
                     System.out.println(line);
                 }
             }
 
             bufferedReader.close();
             fileReader.close();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

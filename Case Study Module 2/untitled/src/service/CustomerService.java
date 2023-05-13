@@ -126,42 +126,59 @@ public class CustomerService extends Customer {
         return orderList;
     }
 
-    public static void run(){
-        Scanner sc = new Scanner(System.in);
-        int choice;
-        do {
-            System.out.println("=====WELCOME CUSTOMER=====");
-            System.out.println("1. Create order");
-            System.out.println("2. View history order");
-            System.out.println("3. Confirm product arrived");
-            System.out.println("0. Sign out");
-            System.out.println("Your choice: ");
-            choice =sc.nextInt();
-            switch (choice){
-                case 1:
-                    System.out.println("=====CREATE ORDER=====");
-                    viewProducts();
-                    System.out.println("Input product's name: ");
-                    sc.nextLine();
-                    String productName = sc.nextLine();
-                    System.out.println("Input quantity: ");
-                    int quantity = sc.nextInt();
-                    System.out.println("Input destination: ");
-                    sc.nextLine();
-                    String destination = sc.nextLine();
-                    System.out.println("Input message");
-                    String message = sc.nextLine();
-                    orderProduct(productName,quantity,LocalDate.now(), destination, message);
-                    break;
-                case 2:
-                    viewHistoryOrder();
-                    break;
-                case 3:
-                    break;
-                case 0:
-                    UserService.run();
-                    break;
+    public static void exportUndeliveredOrders(List<Order> orderList) {
+        for (Order order : orderList) {
+            if (!order.isDelivered()) {
+                System.out.println(order.toFile());
             }
-        } while (true);
+        }
+    }
+
+    public static void run(){
+        try {
+            Scanner sc = new Scanner(System.in);
+            int choice;
+            do {
+                System.out.println("=====WELCOME CUSTOMER=====");
+                System.out.println("1. Create order");
+                System.out.println("2. View history order");
+                System.out.println("3. Confirm product arrived");
+                System.out.println("0. Sign out");
+                System.out.println("Your choice: ");
+                choice = sc.nextInt();
+                switch (choice) {
+                    case 1:
+                        System.out.println("=====CREATE ORDER=====");
+                        viewProducts();
+                        
+                        System.out.println("Input product's name: ");
+                        sc.nextLine();
+                        String productName = sc.nextLine();
+
+                        System.out.println("Input quantity: ");
+                        int quantity = sc.nextInt();
+
+                        System.out.println("Input destination: ");
+                        sc.nextLine();
+                        String destination = sc.nextLine();
+
+                        System.out.println("Input message");
+                        String message = sc.nextLine();
+
+                        orderProduct(productName, quantity, LocalDate.now(), destination, message);
+                        break;
+                    case 2:
+                        viewHistoryOrder();
+                        break;
+                    case 3:
+                        break;
+                    case 0:
+                        UserService.run();
+                        break;
+                }
+            } while (true);
+        } catch (Exception e){
+            System.err.println("Invalid input!!!");
+        }
     }
 }

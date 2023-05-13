@@ -30,8 +30,8 @@ public class Manager {
                 switch (choice) {
                     case 1:
                         System.out.println("=====ORDER HISTORY===== ");
-                        CustomerService.viewHistoryOrder();
-
+                        List<Order> orderList = CustomerService.loadOrderListFromFile();
+                        CustomerService.exportUndeliveredOrders(orderList);
                         System.out.println("=====PRODUCT LIST=====");
                         ProductService.viewProducts();
 
@@ -69,6 +69,7 @@ public class Manager {
                         String email = sc.next();
                         System.out.println("Input role: ");
                         String role = sc.next();
+
                         if (UserService.register(email, userName, password, role)) {
                             User user = new User(email, userName, password, role);
                             UserService.userList.add(user);
@@ -91,6 +92,7 @@ public class Manager {
                         System.out.println("0. Back");
                         System.out.println("Input your choice: ");
                         int choiceProduct = sc.nextInt();
+
                         switch (choiceProduct) {
                             case 1:
                                 System.out.println("=====IMPORT PRODUCT=====");
@@ -206,6 +208,7 @@ public class Manager {
 
                                         System.out.println("Input update import date: ");
                                         String importDateUpdate = sc.nextLine();
+
 //                                        Product updateProduct = new Product(idUpdate, productNameUpdate, quantityUpdate, unitOfProductUpdate, manufactureDateUpdate, expirationDateUpdate, unitUpdate, descriptionUpdate, importerUpdate, importDateUpdate);
                                         Product updateProduct = new BuiderProduct()
                                                 .buildID(idUpdate)
@@ -232,6 +235,7 @@ public class Manager {
                                 System.out.println("Input product's name: ");
                                 sc.nextLine();
                                 productName = sc.nextLine();
+
                                 List<Product> productListForDelete = ProductService.loadProductFromFile();
                                 if (ProductService.findProductByName(productName, productListForDelete)) {
                                     ProductService.deleteProductByName(productName, productListForDelete);
@@ -249,6 +253,7 @@ public class Manager {
                                 System.out.println("=====FIND PRODUCT BY ID=====");
                                 System.out.println("Input product's ID: ");
                                 id = sc.nextInt();
+
                                 List<Product> productListForFindID = ProductService.loadProductFromFile();
                                 ProductService.findProductByID(id, productListForFindID);
                                 break;
@@ -340,7 +345,9 @@ public class Manager {
                                 System.out.println("Input provider's name: ");
                                 sc.nextLine();
                                 providerName = sc.nextLine();
+
                                 List<Provider> providerListForDelete = ProviderService.loadProviderFromFile();
+
                                 if (ProviderService.findProviderByName(providerName, providerListForDelete)) {
                                     ProviderService.deleteProviderByName(providerName);
                                 }
@@ -356,6 +363,7 @@ public class Manager {
                                 System.out.println("Input provider's name: ");
                                 sc.nextLine();
                                 String providerNameForSearching = sc.nextLine();
+
                                 ProviderService.findProvider(providerNameForSearching, providerListForSearching);
                                 break;
                             case 0:
@@ -371,23 +379,29 @@ public class Manager {
                         System.out.println("Input username: ");
                         sc.nextLine();
                         String userNameForSetRole = sc.nextLine();
+
                         if (UserService.findUserByUserName(userNameForSetRole, userListForSetRole)) {
+                            System.out.println("1. manager");
+                            System.out.println("2. employee");
+                            System.out.println("3. customer");
+                            System.out.println("4. provider");
                             System.out.println("Input new role: ");
-                            String newRole = sc.nextLine();
+                            int newRole = sc.nextInt();
+
                             switch (newRole) {
-                                case "manager":
+                                case 1:
                                     UserService.setRole(userNameForSetRole, "manager");
                                     break;
-                                case "employee":
+                                case 2:
                                     UserService.setRole(userNameForSetRole, "employee");
                                     break;
-                                case "customer":
+                                case 3:
                                     UserService.setRole(userNameForSetRole, "customer");
                                     break;
-                                case "provider":
+                                case 4:
                                     UserService.setRole(userNameForSetRole, "provider");
                                 default:
-                                    System.err.println("Invalid role!!!");
+                                    System.err.println("Invalid choice!!!");
                             }
                         } else {
                             System.err.println("User not found!!!");
@@ -415,6 +429,7 @@ public class Manager {
                                 int monthImport1 = sc.nextInt();
                                 System.out.println("Input day: ");
                                 int dayImport1 = sc.nextInt();
+
                                 LocalDate importDate1 = LocalDate.of(yearImport1, monthImport1, dayImport1);
                                 ReportExport.importReportByDate(importDate1);
                                 break;
@@ -426,6 +441,7 @@ public class Manager {
                                 int monthExport2 = sc.nextInt();
                                 System.out.println("Input day: ");
                                 int dayExport2 = sc.nextInt();
+
                                 LocalDate reportDate2 = LocalDate.of(yearExport2, monthExport2, dayExport2);
                                 ReportExport.exportReportByDate(reportDate2);
                                 break;
@@ -437,6 +453,7 @@ public class Manager {
                                 int monthExport3 = sc.nextInt();
                                 System.out.println("Input day: ");
                                 int dayExport3 = sc.nextInt();
+
                                 LocalDate reportDate3 = LocalDate.of(yearExport3, monthExport3, dayExport3);
                                 ReportExport.importReportByWeek(reportDate3);
                                 break;
@@ -448,6 +465,7 @@ public class Manager {
                                 int monthExport4 = sc.nextInt();
                                 System.out.println("Input day: ");
                                 int dayExport4 = sc.nextInt();
+
                                 LocalDate reportDate4 = LocalDate.of(yearExport4, monthExport4, dayExport4);
                                 ReportExport.exportReportByWeek(reportDate4);
                                 break;
@@ -459,7 +477,8 @@ public class Manager {
                                 int monthImport5 = sc.nextInt();
                                 System.out.println("Input day: ");
                                 int dayImport5 = sc.nextInt();
-                                LocalDate importDate5 = LocalDate.of(yearImport5,monthImport5,dayImport5);
+
+                                LocalDate importDate5 = LocalDate.of(yearImport5, monthImport5, dayImport5);
                                 ReportExport.importReportByMonth(importDate5);
                                 break;
                             case 6:
@@ -470,7 +489,8 @@ public class Manager {
                                 int monthExport6 = sc.nextInt();
                                 System.out.println("Input day: ");
                                 int dayExport6 = sc.nextInt();
-                                LocalDate exportDate6 = LocalDate.of(yearExport6,monthExport6,dayExport6);
+
+                                LocalDate exportDate6 = LocalDate.of(yearExport6, monthExport6, dayExport6);
                                 ReportExport.exportReportByMonth(exportDate6);
                                 break;
                             case 7:
@@ -481,7 +501,8 @@ public class Manager {
                                 int monthImport7 = sc.nextInt();
                                 System.out.println("Input day: ");
                                 int dayImport7 = sc.nextInt();
-                                LocalDate importDate7 = LocalDate.of(yearImport7,monthImport7,dayImport7);
+
+                                LocalDate importDate7 = LocalDate.of(yearImport7, monthImport7, dayImport7);
                                 ReportExport.importReportByYear(importDate7);
                                 break;
                             case 8:
@@ -492,7 +513,8 @@ public class Manager {
                                 int monthExport8 = sc.nextInt();
                                 System.out.println("Input day: ");
                                 int dayExport8 = sc.nextInt();
-                                LocalDate exportDate8 = LocalDate.of(yearExport8,monthExport8,dayExport8);
+
+                                LocalDate exportDate8 = LocalDate.of(yearExport8, monthExport8, dayExport8);
                                 ReportExport.exportReportByYear(exportDate8);
                                 break;
                             default:
@@ -507,7 +529,7 @@ public class Manager {
                 }
             } while (true);
         } catch (Exception e) {
-            System.err.println("Invalid choice!!!");
+            System.err.println("Invalid input!!!");
         } finally {
             run();
         }

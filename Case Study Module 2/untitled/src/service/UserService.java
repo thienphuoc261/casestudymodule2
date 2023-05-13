@@ -1,6 +1,5 @@
 package service;
 
-import entity.Customer;
 import entity.User;
 import entity.Employee;
 import entity.Manager;
