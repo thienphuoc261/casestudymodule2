@@ -26,6 +26,7 @@ public class Employee {
                 switch (choice) {
                     case 1:
                         System.out.println("=====IMPORT PRODUCT=====");
+                        ProductService.viewProducts();
                         System.out.println("Input product's ID: ");
                         int id = sc.nextInt();
                         sc.nextLine();
@@ -64,6 +65,7 @@ public class Employee {
                         break;
                     case 2:
                         System.out.println("=====EXPORT PRODUCT=====");
+                        ProductService.viewProducts();
                         System.out.println("Input product's ID: ");
                         int idExport = sc.nextInt();
                         sc.nextLine();

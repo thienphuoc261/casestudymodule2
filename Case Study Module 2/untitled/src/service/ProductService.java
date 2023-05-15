@@ -18,7 +18,7 @@ public class ProductService extends Product implements Serializable {
     public static final String FILE_PRODUCT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\dataProduct.csv";
     private static final String FILE_IMPORT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\importHistory.csv";
     private static final String FILE_EXPORT = "C:\\Users\\ADMIN\\Desktop\\New folder (2)\\Case Study Module 2\\untitled\\src\\data\\exportHistory.csv";
-    public static List<Product> productList = new ArrayList<>();
+    private static List<Product> productList = new ArrayList<>();
 
     public ProductService(String s, int i, LocalDate parse) {
         super(s, i, parse);
@@ -136,7 +136,7 @@ public class ProductService extends Product implements Serializable {
 
             bufferedWriter.close();
             fileWriter.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -165,7 +165,7 @@ public class ProductService extends Product implements Serializable {
 
                 bufferedWriter.close();
                 fileWriter.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             System.out.println("Provider removed successfully.");
@@ -186,7 +186,7 @@ public class ProductService extends Product implements Serializable {
 
             bufferedReader.close();
             fileReader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -223,7 +223,7 @@ public class ProductService extends Product implements Serializable {
 
             bw.close();
             fw.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -241,7 +241,7 @@ public class ProductService extends Product implements Serializable {
 
             bw.close();
             fw.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -276,7 +276,7 @@ public class ProductService extends Product implements Serializable {
                 bufferedWriter.close();
                 fileWriter.close();
                 System.out.println("Product exported successfully.");
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
@@ -296,7 +296,7 @@ public class ProductService extends Product implements Serializable {
 
             bufferedReader.close();
             fileReader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -330,7 +330,7 @@ public class ProductService extends Product implements Serializable {
 
         try {
             Files.write(filePath, lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -360,7 +360,7 @@ public class ProductService extends Product implements Serializable {
 
             bufferedReader.close();
             fileReader.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

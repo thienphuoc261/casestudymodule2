@@ -71,36 +71,8 @@ public class ProviderService extends Provider {
                 bufferedWriter.write(provider.toFileProvider());
                 bufferedWriter.newLine();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    public static void deleteProviderByName(String providerName) {
-        boolean providerFound = false;
-        Provider providerToRemove = null;
-
-        for (int i = 0; i < providerList.size(); i++) {
-            Provider provider = providerList.get(i);
-            if (provider.getProviderName().equalsIgnoreCase(providerName)) {
-                providerToRemove = provider;
-                providerFound = true;
-                break;
-            }
-        }
-
-        if (providerFound) {
-            providerList.remove(providerToRemove);
-            try (PrintWriter writer = new PrintWriter(new FileWriter(FILE_PROVIDER))) {
-                for (Provider provider : providerList) {
-                    writer.println(provider.toFileProvider());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.out.println("Provider removed successfully.");
-        } else {
-            System.err.println("Provider not found.");
         }
     }
 

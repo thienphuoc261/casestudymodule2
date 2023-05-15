@@ -150,7 +150,7 @@ public class CustomerService extends Customer {
                     case 1:
                         System.out.println("=====CREATE ORDER=====");
                         viewProducts();
-                        
+
                         System.out.println("Input product's name: ");
                         sc.nextLine();
                         String productName = sc.nextLine();

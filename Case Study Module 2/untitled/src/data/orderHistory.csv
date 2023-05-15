@@ -24,5 +24,9 @@ e66ac246-a150-4653-8985-2ab5d220369b,Laptop,100,2023-05-11,sg,abc,true
 bfbcfa00-21de-4045-b074-467d2508c64f,Laptop,100,2023-05-11,sg,abc,true
 36c9f1fe-a1bc-4f06-9689-c489ef65aaf6,Laptop,100,2023-05-11,sg,abc,true
 22340428-04a4-4a25-924c-daa3063690d5,Mouse,200,2023-05-11,sg,abc,true
-6ce33c2a-286c-4b0e-9e75-97950e2cfde9,Laptop,100,2023-05-12,sg,abc,false
+6ce33c2a-286c-4b0e-9e75-97950e2cfde9,Laptop,100,2023-05-12,sg,abc,true
 ce0b9d8d-c367-4812-a2f1-93bfeade3fe9,mobile phone,100,2023-05-13,nha trang,abc,true
+fabc9e1c-8418-4eea-ba1f-9341108098b0,Vietnam rice,100,2023-05-14,21k nvt,hurry up,false
+7fb5f6b7-9a8a-4120-bd7a-dc68fb986eba,Vietnam coffee,100,2023-05-14,21k nvt,xyz,false
+1af48929-f36c-431b-88d5-535d683ab7fc,Laptop,100,2023-05-15,21knvt,abc,false
+1115e441-ec22-46f9-94e5-4c4de34ff273,Laptop,1000,2023-05-15,21k nvt,xyz,true

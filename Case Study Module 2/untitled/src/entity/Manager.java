@@ -3,7 +3,6 @@ package entity;
 import service.*;
 import service.impl.BuiderProduct;
 import service.impl.BuilderProvider;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -19,9 +18,9 @@ public class Manager {
                 System.out.println("Please select an option:");
                 System.out.println("1. Confirm order from Customer");
                 System.out.println("2. Create shipment");
-                System.out.println("3. Register for staff");
-                System.out.println("4. Product service");
-                System.out.println("5. Provider service");
+                System.out.println("3. Register users");
+                System.out.println("4. Product services");
+                System.out.println("5. Provider services");
                 System.out.println("6. Set role");
                 System.out.println("7. Export report");
                 System.out.println("0. Sign out");
@@ -96,6 +95,7 @@ public class Manager {
                         switch (choiceProduct) {
                             case 1:
                                 System.out.println("=====IMPORT PRODUCT=====");
+                                ProductService.viewProducts();
                                 System.out.println("Input product's ID: ");
                                 int id = sc.nextInt();
                                 sc.nextLine();
@@ -145,6 +145,7 @@ public class Manager {
                                 break;
                             case 2:
                                 System.out.println("=====EXPORT PRODUCT=====");
+                                ProductService.viewProducts();
                                 System.out.println("Input product's ID: ");
                                 int idExport = sc.nextInt();
                                 sc.nextLine();
@@ -159,9 +160,6 @@ public class Manager {
                                 int unitPriceOfProductExport = sc.nextInt();
                                 sc.nextLine();
 
-                                System.out.println("Input description of product: ");
-                                String descriptionExport = sc.nextLine();
-
                                 System.out.println("Input exporter: ");
                                 String exporter = sc.nextLine();
 
@@ -170,6 +168,7 @@ public class Manager {
                                 break;
                             case 3:
                                 System.out.println("=====UPDATE PRODUCT=====");
+                                ProductService.viewProducts();
                                 System.out.println("Input product's name: ");
                                 sc.nextLine();
                                 productName = sc.nextLine();
@@ -232,6 +231,7 @@ public class Manager {
                                 break;
                             case 4:
                                 System.out.println("=====DELETE PRODUCT=====");
+                                ProductService.viewProducts();
                                 System.out.println("Input product's name: ");
                                 sc.nextLine();
                                 productName = sc.nextLine();
@@ -274,15 +274,15 @@ public class Manager {
                         System.out.println("=====PROVIDER SERVICE=====");
                         System.out.println("1. Add provider");
                         System.out.println("2. Update provider");
-                        System.out.println("3. Delete provider");
-                        System.out.println("4. View providers");
-                        System.out.println("5. Find provider by name");
+                        System.out.println("3. View providers");
+                        System.out.println("4. Find provider by name");
                         System.out.println("0. Back");
                         System.out.println("Input your choice: ");
                         int choiceProvider = sc.nextInt();
                         switch (choiceProvider) {
                             case 1:
                                 System.out.println("=====ADD PROVIDER=====");
+                                ProviderService.viewProviders();
                                 System.out.println("Input provider's name: ");
                                 sc.nextLine();
                                 String providerName = sc.nextLine();
@@ -305,6 +305,7 @@ public class Manager {
                                 ProviderService.addProvider(provider);
                                 break;
                             case 2:
+                                ProviderService.viewProviders();
                                 System.out.println("=====UPDATE PROVIDER=====");
                                 System.out.println("Input provider's name: ");
                                 sc.nextLine();
@@ -341,23 +342,11 @@ public class Manager {
                                 }
                                 break;
                             case 3:
-                                System.out.println("=====DELETE PROVIDER=====");
-                                System.out.println("Input provider's name: ");
-                                sc.nextLine();
-                                providerName = sc.nextLine();
-
-                                List<Provider> providerListForDelete = ProviderService.loadProviderFromFile();
-
-                                if (ProviderService.findProviderByName(providerName, providerListForDelete)) {
-                                    ProviderService.deleteProviderByName(providerName);
-                                }
-                                break;
-                            case 4:
                                 System.out.println("=====VIEW PROVIDERS=====");
                                 System.out.println("ProviderName,Address,PhoneNumber,Email");
                                 ProviderService.viewProviders();
                                 break;
-                            case 5:
+                            case 4:
                                 List<Provider> providerListForSearching = ProviderService.loadProviderFromFile();
                                 System.out.println("=====FIND PROVIDER BY NAME=====");
                                 System.out.println("Input provider's name: ");

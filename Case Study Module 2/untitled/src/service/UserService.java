@@ -102,7 +102,7 @@ public class UserService extends User implements Serializable {
                 userList.add(user);
             }
             updateUserFile();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return userList;
@@ -132,7 +132,7 @@ public class UserService extends User implements Serializable {
             for (User user : userList) {
                 bufferedWriter.write(user.toFile() + "\n");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
